@@ -1,4 +1,4 @@
-from functools import cache
+from functools import lru_cache
 import src.Platforms
 from src.monster import Monster
 FILE_DIR = "./levels/1.txt"
@@ -10,13 +10,15 @@ class Level:
     def __init__(self, path=FILE_DIR):
         self.pathLevel = path
         self.objects = {}
-        self.platforms = []
-        self.monsters = []
+        #self.platforms = []
+        #self.monsters = []
         self.types = {
             "-": src.Platforms.Platform,
             "*": src.Platforms.Spikes,
             "M": Monster
         }
+    def isNotInObjectList(self, value:str) -> bool:
+        return True if str(self.types[value]) not in list(self.objects.keys()) else False
 
     def loadObjects(self):
         countX: int = 0
@@ -26,14 +28,20 @@ class Level:
                 countY = y
                 for x, value in enumerate(row.strip()[:-1]):
                     countX = x
-                    if value in list(self.types.keys())[:2]:
-                        if str(self.types[value]) not in list(self.objects.keys()):
+                    if value in list(self.types.keys()):
+                        if self.isNotInObjectList(value):
                             self.objects[str(self.types[value])]=[self.types[value](x*self.types[value].WIDTH, y*self.types[value].HEIGHT)]    
                         else:
                             self.objects[str(self.types[value])].append(self.types[value](x*self.types[value].WIDTH, y*self.types[value].HEIGHT))
+                    #elif value in list(self.types.keys())[2:]:
+                    #    if self.isNotInObjectList(value):
+                    #        self.objects[str(self.types[value])]=[self.types[value](x*self.types[value].WIDTH, y*self.types[value].HEIGHT)]    
+                    #    else:
+                    #        self.objects[str(self.types[value])].append(self.types[value](x*self.types[value].WIDTH, y*self.types[value].HEIGHT))
             
         self.width  = (countX+1) * src.Platforms.Platform.WIDTH
         self.height = (countY+1) * src.Platforms.Platform.HEIGHT
+
 
     #def loadEntities(self):
 
@@ -49,18 +57,21 @@ class Level:
                 # TO:DO доделать создания монстра
         #        elif value == "M": 
         #            pass
-    @cache
+    @lru_cache
     def getEntities(self, Type:object) -> list:
         output=[]
         for lst in self.objects.values():
             for object in lst:
                 if isinstance(object,Type):
-                    print(f"{object} is a platform")
+                    #print(f"{object} is an {str(Type)}")
                     output.append(object)
         return output
         #return [object for object in self.objects if isinstance(object,Type)]
     def getPlatfroms(self) -> list:
         return self.getEntities(src.Platforms.Platform)
+    
+    def getMonsters(self) -> list:
+        return self.getEntities(src.monster.Monster)
     
     def getPathLevel(self) -> str:
         return self.pathLevel

@@ -31,16 +31,16 @@ class Monster(pygame.sprite.Sprite):
         self.image.fill(pygame.Color(self.COLOR))
         self.boltAnim.blit(self.image, (0, 0))
 
-        self.rect.x += self.xvel
-        self.rect.y += self.yvel
+        #self.rect.x += self.xvel
+        #self.rect.y += self.yvel
 
-        self.collide(platforms)
+        #self.collide(platforms)
 
-        if abs(self.start_x - self.rect.x) > self.max_length:
-            self.xvel = -self.xvel
+        #if abs(self.start_x - self.rect.x) > self.max_length:
+        #    self.xvel = -self.xvel
 
-        if abs(self.start_y - self.rect.y) > self.max_height:
-            self.yvel = -self.yvel
+        #if abs(self.start_y - self.rect.y) > self.max_height:
+        #    self.yvel = -self.yvel
 
     def collide(self, platforms:list):
         for p in platforms:

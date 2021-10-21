@@ -1,5 +1,4 @@
 import pygame
-#import monster
 from src.player import Player
 from src.level import Level
 from src.camera import X, Y, Title, Camera
@@ -20,25 +19,25 @@ class Main:
     def loadBackground(self, path_to_image: str = ""):
         self.background = pygame.image.load(path_to_image)
 
-    def addPlatformsToSpriteGroup(self, platforms: list, group: object):
-        for platform in platforms:
-            group.add(platform)
+    def addObjectsToSpriteGroup(self, entities: list, group: object):
+        for entity in entities:
+            group.add(entity)
 
     def startLevel(self):
         self.Level = Level()
         self.Level.loadObjects()
-        #self.Level.loadEntities()
-
-    def loop(self):
-        #mn = monster.Monster(120, 200, 2, 3, 150, 15)
         self.SpritesGroup = pygame.sprite.Group()
-        self.addPlatformsToSpriteGroup(
+        self.addObjectsToSpriteGroup(
             self.Level.getPlatfroms(), self.SpritesGroup)
+        self.addObjectsToSpriteGroup(self.Level.getMonsters(), self.SpritesGroup)
+
         self.Player = Player(55, 55)
         self.SpritesGroup.add(self.Player)
-        # self.SpritesGroup.add(mn)
         self.Clock = pygame.time.Clock()
         self.Camera = Camera(self.Level.width, self.Level.height)
+    def loop(self):
+        #mn = monster.Monster(120, 200, 2, 3, 150, 15)
+
         while True:
 
             self.Clock.tick(60)
@@ -52,7 +51,7 @@ class Main:
 
             self.display.blit(self.background, (0, 0))
             self.Player.move(self.Level.getPlatfroms(), self.SpritesGroup)
-            self.addPlatformsToSpriteGroup(
+            self.addObjectsToSpriteGroup(
                 self.Level.getPlatfroms(), self.SpritesGroup)
             # mn.update(self.Level.getPlatfroms())
 
@@ -60,6 +59,8 @@ class Main:
             for ent in self.SpritesGroup:
                 self.display.blit(
                     ent.image, self.Camera.applyCorrdinatesToObject(ent))
+                ent.update(self.Level.getPlatfroms())
+                
 
             pygame.display.update()
 
