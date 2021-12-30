@@ -21,13 +21,13 @@ class Level:
         return True if str(self.types[value]) not in list(self.objects.keys()) else False
 
     def loadObjects(self):
-        countX: int = 0
-        countY: int = 0 
+        maxX: int = 0
+        maxY: int = 0 
         with open(self.pathLevel, 'r') as file:
             for y, row in enumerate(file.readlines()):
-                countY = y
+                maxY = y
                 for x, value in enumerate(row.strip()[:-1]):
-                    countX = x
+                    maxX = x
                     if value in list(self.types.keys()):
                         if self.isNotInObjectList(value):
                             self.objects[str(self.types[value])]=[self.types[value](x*self.types[value].WIDTH, y*self.types[value].HEIGHT)]    
@@ -39,8 +39,8 @@ class Level:
                     #    else:
                     #        self.objects[str(self.types[value])].append(self.types[value](x*self.types[value].WIDTH, y*self.types[value].HEIGHT))
             
-        self.width  = (countX+1) * src.Platforms.Platform.WIDTH
-        self.height = (countY+1) * src.Platforms.Platform.HEIGHT
+        self.width  = (maxX+1) * src.Platforms.Platform.WIDTH
+        self.height = (maxY+1) * src.Platforms.Platform.HEIGHT
 
 
     #def loadEntities(self):
